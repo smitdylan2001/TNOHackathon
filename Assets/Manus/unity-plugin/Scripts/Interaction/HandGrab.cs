@@ -70,11 +70,7 @@ namespace Manus.Interaction
 
 		private void TestGrabInput()
 		{
-			if( Input.GetKeyDown( KeyCode.DownArrow ) )
-				m_TestGrab = true;
-
-			if( Input.GetKeyDown( KeyCode.UpArrow ) )
-				m_TestGrab = false;
+			
 		}
 
 		#region Grabbing
