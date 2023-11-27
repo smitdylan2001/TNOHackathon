@@ -1,0 +1,90 @@
+{
+    "name": "InputController",
+    "maps": [
+        {
+            "name": "Head",
+            "id": "a24dcff3-a644-4925-bebd-4b2ac1ee1171",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "9f534ff5-fbfb-4c35-bc9e-412f25dfda1f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9f066721-6145-4f99-92ad-41a6b5959e51",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "LeftHand",
+            "id": "f908091f-5901-4cc5-936b-7a9e217a9943",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "f4600e85-e4d4-455a-add0-3b6b60326ec6",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d5dd6146-5f9a-4819-87af-4f7c1c831778",
+                    "path": "<ViveTracker>/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "RightHand",
+            "id": "bf730359-6825-4070-bb8b-1a6afb0e5542",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "987ff657-6bb5-41e2-939c-6d38b156379b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "56aeb9f7-17b4-4aac-8cc6-56f4dc6c9733",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
