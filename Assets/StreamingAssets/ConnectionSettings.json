@@ -2,5 +2,5 @@
     "m_AutoConnect": true,
     "m_LocalOnly": true,
     "m_ConnectGRPC": false,
-    "m_LastConnectedHost": ""
+    "m_LastConnectedHost": "kubernetes.docker.internal"
 }
