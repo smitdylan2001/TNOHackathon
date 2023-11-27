@@ -4,6 +4,7 @@ using System.Linq;
 using Manus.Skeletons;
 
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Manus.Interaction
 {
@@ -32,6 +33,8 @@ namespace Manus.Interaction
 		private List<Collider> m_InteractableColliders;
 		private GrabbedObject m_GrabbedObject;
 		private CoreSDK.GestureProbabilities m_GestureData;
+
+		public UnityEvent GrabbedObject, ReleaseObject;
 
 		public GrabbedObject grabbedObject { get { return m_GrabbedObject; } }
 
@@ -206,7 +209,7 @@ namespace Manus.Interaction
 			t_Info.objectInteractorForward = t_Grabbable.transform.InverseTransformDirection( transform.forward );
 			t_Info.handToObjectRotation = Quaternion.Inverse( transform.rotation ) * t_Grabbable.transform.rotation;
 			t_Info.objectToHandRotation = Quaternion.Inverse( t_Info.handToObjectRotation );
-
+			GrabbedObject.Invoke();
 			// Add hand info
 			if( !m_GrabbedObject.AddInteractingHand( t_Info ) )
 				Debug.LogWarning( "The Grabbed Object was already tracking this hand!" );
@@ -221,6 +224,7 @@ namespace Manus.Interaction
 				Debug.LogWarning( "The previously Grabbed Object was not tracking this hand!" );
 
 			m_GrabbedObject = null;
+			ReleaseObject.Invoke();
 		}
 
 		private Vector3 CalculatePalmPosition()

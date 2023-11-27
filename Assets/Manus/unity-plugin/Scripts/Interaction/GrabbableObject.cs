@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Manus.Interaction
 {
@@ -11,12 +12,15 @@ namespace Manus.Interaction
 	[AddComponentMenu("Manus/Interaction/Grabbable Object")]
 	public class GrabbableObject : MonoBehaviour, IGrabbable
 	{
+		public UnityEvent OnGrab, OnRelease;
+
 		/// <summary>
 		/// Called when this starts getting grabbed.
 		/// </summary>
 		/// <param name="p_Object">Contains information about the grab</param>
 		public void OnGrabbedStart(GrabbedObject p_Object)
 		{
+			OnGrab.Invoke();
 		}
 
 		/// <summary>
@@ -25,6 +29,7 @@ namespace Manus.Interaction
 		/// <param name="p_Object">Contains information about the grab</param>
 		public void OnGrabbedEnd(GrabbedObject p_Object)
 		{
+			OnRelease.Invoke();
 		}
 
 		/// <summary>
