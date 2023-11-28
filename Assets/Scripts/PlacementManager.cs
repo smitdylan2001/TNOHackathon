@@ -1,3 +1,6 @@
+using Manus;
+using Manus.Haptics;
+using Manus.Interaction;
 using Manus.Skeletons;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,9 +20,19 @@ public class PlacementManager : MonoBehaviour
     Vector3 leftPos;
     bool indexActive, middleActive, ringACtive;
     DropZone currentDropZone;
+
+    HandHaptics leftHaptic, rightHaptic;
+
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        yield return null;
+        if (!rightHaptic) rightHaptic = GetComponent<HandHaptics>();
+        if (!rightHaptic) rightHaptic = GetComponentInParent<HandHaptics>();
+        if (!rightHaptic) rightHaptic = GetComponentInChildren<HandHaptics>();
+        if (!leftHaptic) leftHaptic = leftHand.GetComponent<HandHaptics>();
+        if (!leftHaptic) leftHaptic = leftHand.GetComponentInParent<HandHaptics>();
+        if (!leftHaptic) leftHaptic = leftHand.GetComponentInChildren<HandHaptics>();
     }
 
     // Update is called once per frame
@@ -74,29 +87,79 @@ public class PlacementManager : MonoBehaviour
             var obj =  currentDropZone.ContainedObject.GetComponent<PlacableObject>();
             if (obj)
             {
-                float dist =  leftHand.transform.position.y - leftPos.y;
-                obj.SetAudio(dist + 0.5f);
-
+                float dist =  leftHand.transform.position.y - leftPos.y + 0.5f;
+                obj.SetAudio(dist);
+                
                 //obj.SetAudio(thumbDist, indexDist, middleDist);
-            Debug.Log($"distance is {dist} and index pos is {indexDist}");
-            }
-            
-            if (indexActive && indexDist > 0.07f)
-            {
-                IsEditing = false;
-                indexActive = false;
-            }
-            else if (middleActive && middleDist > 0.11f)
-            {
-                IsEditing = false;
-                middleActive = false;
-            }
-            else if (ringACtive && ringDist > 0.11f)
-            {
-                IsEditing = false;
-                ringACtive = false;
+
+                leftHaptic.SetHapticsStrengthOverride(1, dist);
+                leftHaptic.SetHapticsStrengthOverride(2, dist);
+                leftHaptic.SetHapticsStrengthOverride(3, dist);
+                leftHaptic.SetHapticsStrengthOverride(4, dist);
+                //leftHaptic.SetHapticsStrengthOverride(5, dist);
+
+                if (indexActive)
+                {
+                    rightHaptic.SetHapticsStrengthOverride(1, dist );
+                    if (indexDist > 0.07f)
+                    {
+                        IsEditing = false;
+                        indexActive = false;
+                        leftHaptic.SetHapticsStrengthOverride(1, 0);
+                        leftHaptic.SetHapticsStrengthOverride(2, 0);
+                        leftHaptic.SetHapticsStrengthOverride(3, 0);
+                        leftHaptic.SetHapticsStrengthOverride(4, 0);
+                        rightHaptic.SetHapticsStrengthOverride(1, 0);
+                        leftHaptic.SetHapticsStrengthOverride(5, 0);
+                    }
+
+                }
+                else if (middleActive)
+                {
+                    rightHaptic.SetHapticsStrengthOverride(2, dist);
+                    if (middleDist > 0.11f)
+                    {
+                        IsEditing = false;
+                        middleActive = false;
+                        leftHaptic.SetHapticsStrengthOverride(1, 0);
+                        leftHaptic.SetHapticsStrengthOverride(2, 0);
+                        leftHaptic.SetHapticsStrengthOverride(3, 0);
+                        leftHaptic.SetHapticsStrengthOverride(4, 0);
+                        rightHaptic.SetHapticsStrengthOverride(2, 0);
+                        leftHaptic.SetHapticsStrengthOverride(5, 0);
+                    }
+                }
+                else if (ringACtive)
+                {
+                    rightHaptic.SetHapticsStrengthOverride(3, dist);
+                    if (ringDist > 0.11f)
+                    {
+                        IsEditing = false;
+                        ringACtive = false;
+                        leftHaptic.SetHapticsStrengthOverride(1, 0);
+                        leftHaptic.SetHapticsStrengthOverride(2, 0);
+                        leftHaptic.SetHapticsStrengthOverride(3, 0);
+                        leftHaptic.SetHapticsStrengthOverride(4, 0);
+                        rightHaptic.SetHapticsStrengthOverride(3, 0);
+                        leftHaptic.SetHapticsStrengthOverride(5, 0);
+                    }
+                }
             }
         }
+    }
+
+    public void OnApplicationQuit()
+    {
+        leftHaptic.SetHapticsStrengthOverride(1, 0);
+        leftHaptic.SetHapticsStrengthOverride(2, 0);
+        leftHaptic.SetHapticsStrengthOverride(3, 0);
+        leftHaptic.SetHapticsStrengthOverride(4, 0);
+        rightHaptic.SetHapticsStrengthOverride(1, 0);
+        rightHaptic.SetHapticsStrengthOverride(2, 0);
+        rightHaptic.SetHapticsStrengthOverride(3, 0);
+        rightHaptic.SetHapticsStrengthOverride(4, 0);
+        leftHaptic.SetHapticsStrengthOverride(5, 0);
+        rightHaptic.SetHapticsStrengthOverride(5, 0);
     }
 
     public void SpawnObject(GameObject spawn)
@@ -111,6 +174,16 @@ public class PlacementManager : MonoBehaviour
         {
             Destroy(currentDropZone.ContainedObject);
             currentDropZone.ContainedObject = null;
+            leftHaptic.SetHapticsStrengthOverride(1, 0);
+            leftHaptic.SetHapticsStrengthOverride(2, 0);
+            leftHaptic.SetHapticsStrengthOverride(3, 0);
+            leftHaptic.SetHapticsStrengthOverride(4, 0);
+            leftHaptic.SetHapticsStrengthOverride(5, 0);
+            rightHaptic.SetHapticsStrengthOverride(1, 0);
+            rightHaptic.SetHapticsStrengthOverride(2, 0);
+            rightHaptic.SetHapticsStrengthOverride(3, 0);
+            rightHaptic.SetHapticsStrengthOverride(4, 0);
+            rightHaptic.SetHapticsStrengthOverride(5, 0);
         }
         else
         {
@@ -131,6 +204,13 @@ public class PlacementManager : MonoBehaviour
             IsEditing = true;
 
             leftPos = leftHand.transform.position;
+
+            if (!rightHaptic) rightHaptic = GetComponent<HandHaptics>();
+            if (!rightHaptic) rightHaptic = GetComponentInParent<HandHaptics>();
+            if (!rightHaptic) rightHaptic = GetComponentInChildren<HandHaptics>();
+            if (!leftHaptic) leftHaptic = leftHand.GetComponent<HandHaptics>();
+            if (!leftHaptic) leftHaptic = leftHand.GetComponentInParent<HandHaptics>();
+            if (!leftHaptic) leftHaptic = leftHand.GetComponentInChildren<HandHaptics>();
         }
     }
 }
