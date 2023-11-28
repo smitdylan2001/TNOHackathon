@@ -5,7 +5,10 @@ using UnityEngine;
 public class DropZone : MonoBehaviour
 {
     public MeshRenderer renderer;
-    public float pitch;
+    public int pitch;
+
+    public bool ContainsObject;
+    public GameObject ContainedObject;
 
     // Start is called before the first frame update
     void Start()

@@ -5,81 +5,62 @@ using UnityEngine;
 
 public class PlacableObject : MonoBehaviour
 {
-    Renderer closestRenderer;
-    public LayerMask allowedDropBoxLayer;
-
     public bool doChecks = false;
 
     public int blockNotes = 1;
-    float pitch= 1;
-    AudioSource source;
-    Rigidbody rb;
+    public AudioSource source;
+
+    public AudioClip[] newClips;
+
+
+    public AudioSource Chord, Drum, Lead;
+    public AudioClip[] Chords, Drums, Leads;
+
     // Start is called before the first frame update
     void Start()
     {
         source = GetComponent<AudioSource>();
-        source.loop = true;
     }
 
     
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == 6)
+        if (other.CompareTag("MusicInteractor"))
         {
-            other.GetComponent<MeshRenderer>().enabled = true;
+            source.Play();
+           // Chord.Play();
+            //Drum.Play();
+            //Lead.Play();
+            //Play sound for blockNotes long at tune height
+            //PlayDuration(blockNotes / 10);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.CompareTag("MusicInteractor"))
         {
-            other.GetComponent<MeshRenderer>().enabled = false;
+            //Play sound for blockNotes long at tune height
+            //PlayDuration(blockNotes / 10);
         }
-    }
-
-    [ContextMenu("Release")]
-    public void OnDrop()
-    {
-        var overlaps = Physics.OverlapBox(transform.position, transform.localScale, transform.rotation, allowedDropBoxLayer, QueryTriggerInteraction.Collide); //Add layer
-
-        if (overlaps.Length == 0) return;
-
-        Collider closestCol = overlaps[0];
-        float dist = float.PositiveInfinity;
-        foreach (var col in overlaps)
-        {
-            col.GetComponent<MeshRenderer>().enabled = false;
-
-            var newDist = Vector3.Distance(transform.position, col.transform.position);
-
-            if (newDist < dist)
-            {
-                dist = newDist;
-                closestCol = col;
-            }
-        }
-
-        transform.SetPositionAndRotation(closestCol.transform.position, closestCol.transform.rotation);
-        //rb.isKinematic = true;
-    }
-
-    public void OnGrab()
-    {
-        doChecks = true;
-        //rb.isKinematic = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("MusicInteractor"))
-        {
-            //Play sound for blockNotes long at tune height
-            PlayDuration(blockNotes / 10);
-        }
+       
     }
 
+    public void SetAudio(float chord, float drum, float lead)
+    {
+        Chord.volume = chord;
+        Drum.volume = drum;
+        Lead.volume = lead;
+    }
+    public void SetAudio(float chord)
+    {
+        source.volume = chord;
+    }
     public async void PlayDuration(float seconds)
     {
         source.Play();
