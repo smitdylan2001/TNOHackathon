@@ -1,0 +1,6 @@
+-- Instructions --
+1. Purchase Shadow Receiver URP and import the latest version into your project
+	https://assetstore.unity.com/packages/vfx/shaders/shadow-receiver-urp-directional-additional-light-shadows-228069
+
+2. Go to Assets/ShadowReceiverURP/Light Receiver URP Integration and follow the instructions there
+
