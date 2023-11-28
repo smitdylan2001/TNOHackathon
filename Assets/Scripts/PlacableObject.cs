@@ -62,11 +62,13 @@ public class PlacableObject : MonoBehaviour
         }
 
         transform.SetPositionAndRotation(closestCol.transform.position, closestCol.transform.rotation);
+        //rb.isKinematic = true;
     }
 
     public void OnGrab()
     {
         doChecks = true;
+        //rb.isKinematic = false;
     }
 
     private void OnCollisionEnter(Collision collision)
