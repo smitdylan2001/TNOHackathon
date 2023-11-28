@@ -56,12 +56,12 @@ public class PlacementManager : MonoBehaviour
             {
                 SpawnObject(indexSpawn);
                 indexActive = true;
-            }else if (middleDist < 0.1f)
+            }else if (middleDist < 0.07f)
             {
                 SpawnObject(MiddleSpawn);
                 middleActive = true;
             }
-            else if (ringDist < 0.1f)
+            else if (ringDist < 0.07f)
             {
                 SpawnObject(RingSpawn);
                 ringACtive = true;
@@ -74,29 +74,24 @@ public class PlacementManager : MonoBehaviour
             var obj =  currentDropZone.ContainedObject.GetComponent<PlacableObject>();
             if (obj)
             {
-                float dist = Mathf.Abs(leftPos.y - leftHand.transform.position.y);
+                float dist =  leftHand.transform.position.y - leftPos.y;
                 obj.SetAudio(dist + 0.5f);
 
                 //obj.SetAudio(thumbDist, indexDist, middleDist);
+            Debug.Log($"distance is {dist} and index pos is {indexDist}");
             }
-            Debug.Log($"distance is {Vector3.Distance(transform.position, obj.transform.position)} and index pos is {indexDist}");
-            if(Vector3.Distance(transform.position, obj.transform.position) > MaxDistance)
-            {
-                IsEditing = false;
-                currentDropZone = null;
-            }
-
-            if (indexActive && indexDist > 0.05f)
+            
+            if (indexActive && indexDist > 0.07f)
             {
                 IsEditing = false;
                 indexActive = false;
             }
-            else if (middleActive && middleDist > 0.1f)
+            else if (middleActive && middleDist > 0.11f)
             {
                 IsEditing = false;
                 middleActive = false;
             }
-            else if (ringACtive && ringDist > 0.1f)
+            else if (ringACtive && ringDist > 0.11f)
             {
                 IsEditing = false;
                 ringACtive = false;
