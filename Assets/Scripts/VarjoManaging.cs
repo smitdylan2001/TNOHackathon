@@ -10,7 +10,13 @@ public class VarjoManaging : MonoBehaviour
     {
         VarjoMixedReality.StartRender();
         Debug.Log(VarjoMixedReality.IsMRAvailable());
+        VarjoMixedReality.EnableDepthEstimation();
 
+    }
+
+    private void OnApplicationQuit()
+    {
+        VarjoMixedReality.DisableDepthEstimation();
     }
 
     // Update is called once per frame

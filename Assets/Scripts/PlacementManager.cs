@@ -164,7 +164,7 @@ public class PlacementManager : MonoBehaviour
 
     public void SpawnObject(GameObject spawn)
     {
-        Debug.Log("Grabbin it");
+        //Debug.Log("Grabbin it");
 
         if(!currentRenderer || !gameObject || IsEditing || !canSpawn) return;
 
