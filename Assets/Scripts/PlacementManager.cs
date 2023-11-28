@@ -1,62 +1,141 @@
+using Manus.Skeletons;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
-    public GameObject spawnableObject, trackedHandPose;
+    public float MaxDistance = 0.5f;
+    public GameObject spawnableObject, trackedHandPose, indexSpawn, MiddleSpawn, RingSpawn, leftHand;
+    public Transform HandBase, ThumbTip, IndexTip, MiddleTip, RingTip;
     public Transform[] placables;
     MeshRenderer currentRenderer;
 
+    bool IsEditing;
+    float minDist = float.MaxValue;
+    bool canSpawn;
+    Vector3 leftPos;
+    bool indexActive, middleActive, ringACtive;
+    DropZone currentDropZone;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        float minDist = float.MaxValue;
+        float indexDist = Vector3.Distance(IndexTip.position, ThumbTip.position);
+        float middleDist = Vector3.Distance(MiddleTip.position, ThumbTip.position);
+        float ringDist = Vector3.Distance(RingTip.position, ThumbTip.position);
 
-        foreach (var placable in placables)
+        if (!IsEditing)
         {
-            float dist = Vector3.Distance(trackedHandPose.transform.position, placable.position);
+            minDist = float.MaxValue;
 
-            if(dist < minDist)
+            foreach (var placable in placables)
             {
-                if(currentRenderer) currentRenderer.enabled = false;
-                minDist = dist;
-                currentRenderer = placable.GetComponent<MeshRenderer>();
-                currentRenderer.enabled = true;
+                float dist = Vector3.Distance(trackedHandPose.transform.position, placable.position);
+
+                if (dist < minDist)
+                {
+                    if (currentRenderer) currentRenderer.enabled = false;
+                    minDist = dist;
+                    currentRenderer = placable.GetComponent<MeshRenderer>();
+                    currentRenderer.enabled = true;
+                    canSpawn = true;
+                    if (minDist > MaxDistance)
+                    {
+                        currentRenderer.enabled = false;
+                        canSpawn = false;
+                    }
+                }
+            }
+
+            if(indexDist < 0.05f)
+            {
+                SpawnObject(indexSpawn);
+                indexActive = true;
+            }else if (middleDist < 0.1f)
+            {
+                SpawnObject(MiddleSpawn);
+                middleActive = true;
+            }
+            else if (ringDist < 0.1f)
+            {
+                SpawnObject(RingSpawn);
+                ringACtive = true;
+            }
+        }
+        else
+        {
+            if (!currentDropZone) return;
+
+            var obj =  currentDropZone.ContainedObject.GetComponent<PlacableObject>();
+            if (obj)
+            {
+                float dist = Mathf.Abs(leftPos.y - leftHand.transform.position.y);
+                obj.SetAudio(dist + 0.5f);
+
+                //obj.SetAudio(thumbDist, indexDist, middleDist);
+            }
+            Debug.Log($"distance is {Vector3.Distance(transform.position, obj.transform.position)} and index pos is {indexDist}");
+            if(Vector3.Distance(transform.position, obj.transform.position) > MaxDistance)
+            {
+                IsEditing = false;
+                currentDropZone = null;
+            }
+
+            if (indexActive && indexDist > 0.05f)
+            {
+                IsEditing = false;
+                indexActive = false;
+            }
+            else if (middleActive && middleDist > 0.1f)
+            {
+                IsEditing = false;
+                middleActive = false;
+            }
+            else if (ringACtive && ringDist > 0.1f)
+            {
+                IsEditing = false;
+                ringACtive = false;
             }
         }
     }
 
-    public void SpawnObject()
+    public void SpawnObject(GameObject spawn)
     {
-        if(!currentRenderer || !gameObject) return;
+        Debug.Log("Grabbin it");
 
-        var dropzone = currentRenderer.GetComponent<DropZone>();
+        if(!currentRenderer || !gameObject || IsEditing || !canSpawn) return;
 
-        if(dropzone.ContainedObject)
+        currentDropZone = currentRenderer.GetComponent<DropZone>();
+
+        if(currentDropZone.ContainedObject)
         {
-            Destroy(dropzone.ContainedObject);
-            dropzone.ContainedObject = null;
+            Destroy(currentDropZone.ContainedObject);
+            currentDropZone.ContainedObject = null;
         }
         else
         {
-            var newObj = Instantiate(spawnableObject);
+            var newObj = Instantiate(spawn);
             newObj.transform.SetPositionAndRotation(currentRenderer.transform.position, currentRenderer.transform.rotation);
-            dropzone.ContainedObject = newObj;
+            currentDropZone.ContainedObject = newObj;
 
             newObj.GetComponent<MeshRenderer>().enabled = true;
 
             var obj = newObj.GetComponent<PlacableObject>();
 
-            obj.Drum.clip = obj.Drums[dropzone.pitch];
-            obj.Lead.clip = obj.Leads[dropzone.pitch];
-            obj.Chord.clip = obj.Chords[dropzone.pitch];
+            obj.source.clip = obj.newClips[currentDropZone.pitch];
+            obj.SetAudio(0.5f);
+            //obj.Drum.clip = obj.Drums[currentDropZone.pitch];
+            //obj.Lead.clip = obj.Leads[currentDropZone.pitch];
+            //obj.Chord.clip = obj.Chords[currentDropZone.pitch];
+
+            IsEditing = true;
+
+            leftPos = leftHand.transform.position;
         }
     }
 }

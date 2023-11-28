@@ -8,7 +8,9 @@ public class PlacableObject : MonoBehaviour
     public bool doChecks = false;
 
     public int blockNotes = 1;
-    AudioSource source;
+    public AudioSource source;
+
+    public AudioClip[] newClips;
 
 
     public AudioSource Chord, Drum, Lead;
@@ -17,26 +19,26 @@ public class PlacableObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        source = GetComponent<AudioSource>();
     }
 
     
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
         if (other.CompareTag("MusicInteractor"))
         {
-            Chord.Play();
-            Drum.Play();
-            Lead.Play();
+            source.Play();
+           // Chord.Play();
+            //Drum.Play();
+            //Lead.Play();
             //Play sound for blockNotes long at tune height
-            PlayDuration(blockNotes / 10);
+            //PlayDuration(blockNotes / 10);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log(other.tag);
         if (other.CompareTag("MusicInteractor"))
         {
             //Play sound for blockNotes long at tune height
@@ -49,6 +51,16 @@ public class PlacableObject : MonoBehaviour
        
     }
 
+    public void SetAudio(float chord, float drum, float lead)
+    {
+        Chord.volume = chord;
+        Drum.volume = drum;
+        Lead.volume = lead;
+    }
+    public void SetAudio(float chord)
+    {
+        source.volume = chord;
+    }
     public async void PlayDuration(float seconds)
     {
         source.Play();
