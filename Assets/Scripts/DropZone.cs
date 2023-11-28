@@ -5,7 +5,7 @@ using UnityEngine;
 public class DropZone : MonoBehaviour
 {
     public MeshRenderer renderer;
-    public float pitch;
+    public int pitch;
 
     public bool ContainsObject;
     public GameObject ContainedObject;

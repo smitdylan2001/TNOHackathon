@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
-    public GameObject GameObject, trackedHandPose;
+    public GameObject spawnableObject, trackedHandPose;
     public Transform[] placables;
     MeshRenderer currentRenderer;
 
@@ -39,14 +39,24 @@ public class PlacementManager : MonoBehaviour
 
         var dropzone = currentRenderer.GetComponent<DropZone>();
 
-        if(dropzone)
+        if(dropzone.ContainedObject)
         {
             Destroy(dropzone.ContainedObject);
+            dropzone.ContainedObject = null;
         }
         else
         {
-            var newObj = Instantiate(gameObject);
+            var newObj = Instantiate(spawnableObject);
             newObj.transform.SetPositionAndRotation(currentRenderer.transform.position, currentRenderer.transform.rotation);
+            dropzone.ContainedObject = newObj;
+
+            newObj.GetComponent<MeshRenderer>().enabled = true;
+
+            var obj = newObj.GetComponent<PlacableObject>();
+
+            obj.Drum.clip = obj.Drums[dropzone.pitch];
+            obj.Lead.clip = obj.Leads[dropzone.pitch];
+            obj.Chord.clip = obj.Chords[dropzone.pitch];
         }
     }
 }

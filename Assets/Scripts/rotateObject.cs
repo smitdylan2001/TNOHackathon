@@ -18,7 +18,8 @@ public class rotateObject : MonoBehaviour
     void Update()
     {
         transform.Rotate(rotateAmount * Time.deltaTime);
-        Debug.Log(transform.eulerAngles);
+
+        Debug.Log(gameObject.transform.eulerAngles);
 
         if (gameObject.transform.eulerAngles.y > 179)
         {
