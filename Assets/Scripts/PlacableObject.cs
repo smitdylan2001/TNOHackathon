@@ -8,11 +8,12 @@ public class PlacableObject : MonoBehaviour
     Renderer closestRenderer;
     public LayerMask allowedDropBoxLayer;
 
-    bool doChecks = false;
+    public bool doChecks = false;
 
     public int blockNotes = 1;
     float pitch= 1;
     AudioSource source;
+    Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,43 +21,54 @@ public class PlacableObject : MonoBehaviour
         source.loop = true;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (!doChecks) return;
+    
 
-        var overlaps = Physics.OverlapBox(transform.position, transform.localScale / 3, transform.rotation, allowedDropBoxLayer); //Add layer
-        Collider closestCol;
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == 6)
+        {
+            other.GetComponent<MeshRenderer>().enabled = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == 6)
+        {
+            other.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
+    [ContextMenu("Release")]
+    public void OnDrop()
+    {
+        var overlaps = Physics.OverlapBox(transform.position, transform.localScale, transform.rotation, allowedDropBoxLayer, QueryTriggerInteraction.Collide); //Add layer
+
+        if (overlaps.Length == 0) return;
+
+        Collider closestCol = overlaps[0];
         float dist = float.PositiveInfinity;
         foreach (var col in overlaps)
         {
+            col.GetComponent<MeshRenderer>().enabled = false;
+
             var newDist = Vector3.Distance(transform.position, col.transform.position);
 
             if (newDist < dist)
             {
                 dist = newDist;
                 closestCol = col;
-                closestRenderer.enabled = false;
-                closestRenderer = closestCol.GetComponent<Renderer>();
-                closestRenderer.enabled = true;
             }
         }
-    }
 
-    public void OnDrop()
-    {
-        if (!closestRenderer) return;
-
-        closestRenderer.enabled = false;
-        transform.SetPositionAndRotation(closestRenderer.transform.position, closestRenderer.transform.rotation); //TODO set to the right when block is wide!
-        doChecks = false;
-        source.pitch = pitch;
-        //Check collision blockNotes notes to the right
+        transform.SetPositionAndRotation(closestCol.transform.position, closestCol.transform.rotation);
+        //rb.isKinematic = true;
     }
 
     public void OnGrab()
     {
         doChecks = true;
+        //rb.isKinematic = false;
     }
 
     private void OnCollisionEnter(Collision collision)
