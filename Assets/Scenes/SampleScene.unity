@@ -5208,11 +5208,11 @@ MonoBehaviour:
   spawnableObject: {fileID: 4194870773311593005, guid: a52c9c314bd6630429077ae765e1203f,
     type: 3}
   trackedHandPose: {fileID: 241458696}
-  indexSpawn: {fileID: 4194870773311593005, guid: a52c9c314bd6630429077ae765e1203f,
+  indexSpawn: {fileID: 4194870773311593005, guid: 438dea6673534e94182eb16bf5f760bf,
     type: 3}
   MiddleSpawn: {fileID: 4194870773311593005, guid: 102257afb4d55de43ac7d259cccb29ed,
     type: 3}
-  RingSpawn: {fileID: 4194870773311593005, guid: 438dea6673534e94182eb16bf5f760bf,
+  RingSpawn: {fileID: 4194870773311593005, guid: a52c9c314bd6630429077ae765e1203f,
     type: 3}
   leftHand: {fileID: 1107739851}
   HandBase: {fileID: 1693378442}
