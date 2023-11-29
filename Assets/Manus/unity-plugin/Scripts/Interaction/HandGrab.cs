@@ -4,7 +4,6 @@ using System.Linq;
 using Manus.Skeletons;
 
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Manus.Interaction
 {
@@ -33,8 +32,6 @@ namespace Manus.Interaction
 		private List<Collider> m_InteractableColliders;
 		private GrabbedObject m_GrabbedObject;
 		private CoreSDK.GestureProbabilities m_GestureData;
-
-		public UnityEvent GrabbedObject, ReleaseObject;
 
 		public GrabbedObject grabbedObject { get { return m_GrabbedObject; } }
 
@@ -73,7 +70,11 @@ namespace Manus.Interaction
 
 		private void TestGrabInput()
 		{
-			
+			if( Input.GetKeyDown( KeyCode.DownArrow ) )
+				m_TestGrab = true;
+
+			if( Input.GetKeyDown( KeyCode.UpArrow ) )
+				m_TestGrab = false;
 		}
 
 		#region Grabbing
@@ -98,8 +99,6 @@ namespace Manus.Interaction
 			}
 		}
 
-		bool hasGrabbed;
-
 		private void DetectGrabGesture()
 		{
 			bool t_IsGrabbing = m_GrabPercentage > m_GrabPercentageThreshold || m_TestGrab;
@@ -112,21 +111,10 @@ namespace Manus.Interaction
 			if( m_Grabbing )
 			{
 				Grab();
-				if (!hasGrabbed)
-				{
-					GrabbedObject.Invoke();
-					hasGrabbed = true;
-
-                }
-            }
+			}
 			else
 			{
 				Release();
-
-				if (hasGrabbed)
-				{
-					hasGrabbed = false;
-                }
 			}
 		}
 
@@ -222,7 +210,7 @@ namespace Manus.Interaction
 			t_Info.objectInteractorForward = t_Grabbable.transform.InverseTransformDirection( transform.forward );
 			t_Info.handToObjectRotation = Quaternion.Inverse( transform.rotation ) * t_Grabbable.transform.rotation;
 			t_Info.objectToHandRotation = Quaternion.Inverse( t_Info.handToObjectRotation );
-			
+
 			// Add hand info
 			if( !m_GrabbedObject.AddInteractingHand( t_Info ) )
 				Debug.LogWarning( "The Grabbed Object was already tracking this hand!" );
@@ -237,7 +225,6 @@ namespace Manus.Interaction
 				Debug.LogWarning( "The previously Grabbed Object was not tracking this hand!" );
 
 			m_GrabbedObject = null;
-			ReleaseObject.Invoke();
 		}
 
 		private Vector3 CalculatePalmPosition()
